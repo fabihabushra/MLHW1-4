@@ -3,13 +3,14 @@
 ## Folder Structure
 ```plaintext
 .
-├── bank/               # Folder containing Bank dataset 
-│   ├── train.csv       # Training data
-│   ├── test.csv        # Test data
-├── car/                # Folder containing Car dataset 
-│   ├── train.csv       # Training data 
-│   ├── test.csv        # Test data 
-├── DecisionTree/       # Folder containing decision tree code
-├── dataloader.py       # Python script to load and process datasets
-├── main.py             # Main script for running the experiments
-├── run.sh              # Shell script to execute the code
+├── bank/               
+│   ├── train.csv       
+│   ├── test.csv        
+├── car/               
+│   ├── train.csv       
+│   ├── test.csv        
+├── DecisionTree/
+│   ├── decisiontree.py     
+├── dataloader.py       
+├── main.py             
+├── run.sh              

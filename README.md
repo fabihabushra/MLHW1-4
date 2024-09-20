@@ -1,7 +1,7 @@
 ## This is a machine learning library developed by Fabiha Bushra for CS5350/6350 in University of Utah.
 
 ## Folder Structure
-
+```plaintext
 .
 ├── bank/               # Folder containing Bank dataset CSV files
 │   ├── train.csv       # Training data for the Bank dataset

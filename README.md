@@ -20,7 +20,7 @@ This project implements decision tree algorithms using the ID3 framework for bot
 ```
 
 ## Running the Code
-To execute the code, run the run.sh script located in the root directory.
+To execute the code, run the `run.sh` script located in the root directory.
 
 ## User Input
 

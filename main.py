@@ -127,8 +127,8 @@ def run_experiments_bank(train_file, test_file, max_depth):
 
 if __name__ == "__main__":
     print("Please select a dataset to run the experiment on:")
-    print("1. Car Dataset (categorical only)")
-    print("2. Bank Dataset (with numerical attributes)")
+    print("1. Car Dataset")
+    print("2. Bank Dataset")
     
     dataset_choice = input("Enter 1 or 2: ").strip()
     

@@ -76,7 +76,7 @@ def run_experiments_car(train_file, test_file, max_depth):
             print(f"{result['Max Depth']:<10} {result['Train Error']:<12.4f} {result['Test Error']:<12.4f}")
         print("\n")
 
-def run_experiments_bank(train_file, test_file, max_depth):
+def run_experiments_bank(train_file, test_file, max_depth, handle_unknown):
     """Run the ID3 experiment on the bank dataset (with numerical attributes)."""
     train_data = load_data(train_file)
     test_data = load_data(test_file)
@@ -84,9 +84,10 @@ def run_experiments_bank(train_file, test_file, max_depth):
     categorical_indices, numerical_indices = infer_column_types(train_data)
     # print("Categorical Indices: ", categorical_indices)
     # print("Numerical Indices: ", numerical_indices)
-    
-    train_data = handle_unknown_values(train_data, categorical_indices)
-    test_data = handle_unknown_values(test_data, categorical_indices)
+
+    if handle_unknown == 'y':
+        train_data = handle_unknown_values(train_data, categorical_indices)
+        test_data = handle_unknown_values(test_data, categorical_indices)
     
     train_data = process_numerical_attributes(train_data, numerical_indices)
     test_data = process_numerical_attributes(test_data, numerical_indices)
@@ -146,7 +147,9 @@ if __name__ == "__main__":
         train_file = os.path.join(base_dir, 'bank', 'train.csv')
         test_file = os.path.join(base_dir, 'bank', 'test.csv')
         max_depth = int(input("\nEnter the maximum depth of the tree (e.g. 16): "))
-        run_experiments_bank(train_file, test_file, max_depth)
+        handle_unknown = input("\nDo you want to replace 'unknown' values with the majority of other attribute values in the training set? (y/n): ").strip().lower()
+        
+        run_experiments_bank(train_file, test_file, max_depth, handle_unknown)
         
     else:
         print("Invalid choice. Please enter 1 or 2.")

@@ -137,7 +137,7 @@ if __name__ == "__main__":
         base_dir = os.path.dirname(os.path.abspath(__file__))
         train_file = os.path.join(base_dir, 'car', 'train.csv')
         test_file = os.path.join(base_dir, 'car', 'test.csv')
-        max_depth = int(input("Enter the maximum depth of the tree (e.g. 6): "))
+        max_depth = int(input("\nEnter the maximum depth of the tree (e.g. 6): "))
         run_experiments_car(train_file, test_file, max_depth)
         
     elif dataset_choice == "2":
@@ -145,7 +145,7 @@ if __name__ == "__main__":
         base_dir = os.path.dirname(os.path.abspath(__file__))
         train_file = os.path.join(base_dir, 'bank', 'train.csv')
         test_file = os.path.join(base_dir, 'bank', 'test.csv')
-        max_depth = int(input("Enter the maximum depth of the tree (e.g. 16): "))
+        max_depth = int(input("\nEnter the maximum depth of the tree (e.g. 16): "))
         run_experiments_bank(train_file, test_file, max_depth)
         
     else:

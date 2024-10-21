@@ -1,4 +1,4 @@
-# DecisionTree/decisiontree.py
+
 
 from collections import Counter
 import math
@@ -11,7 +11,7 @@ def entropy(data):
     entropy_value = 0
     for count in label_counts.values():
         p = count / total
-        entropy_value -= p * math.log2(p) if p > 0 else 0  # avoid log(0)
+        entropy_value -= p * math.log2(p) if p > 0 else 0  
     return entropy_value
 
 def info_gain(data, attribute_index, numerical_indices=None):
@@ -67,15 +67,15 @@ def majority_error_gain(data, attribute_index, numerical_indices=None):
 def id3(data, attributes, depth, max_depth, criterion='information_gain', numerical_indices=None):
     labels = [row[-1] for row in data]
     
-    # Pure node
+    
     if len(set(labels)) == 1:
         return labels[0]
     
-    # Max depth reached or no more attributes
+    
     if not attributes or depth == max_depth:
         return Counter(labels).most_common(1)[0][0]
     
-    # Calculate gains based on the criterion
+    
     if criterion == 'information_gain':
         gains = [info_gain(data, i, numerical_indices) for i in attributes]
     elif criterion == 'gini':
@@ -85,13 +85,13 @@ def id3(data, attributes, depth, max_depth, criterion='information_gain', numeri
     else:
         raise ValueError(f"Unknown criterion: {criterion}")
     
-    # Select the best attribute to split on
+    
     best_attr = attributes[gains.index(max(gains))]
 
     tree = {best_attr: {}}
     
     if numerical_indices and best_attr in numerical_indices:
-        # For numerical attributes, split based on median
+        
         median = np.median([float(row[best_attr]) for row in data])
         
         greater_equal_subset = [row for row in data if float(row[best_attr]) >= median]
@@ -103,7 +103,7 @@ def id3(data, attributes, depth, max_depth, criterion='information_gain', numeri
             tree[best_attr][f"< {median}"] = id3(less_subset, attributes, depth + 1, max_depth, criterion, numerical_indices)
     
     else:
-        # For categorical attributes, split based on each unique value
+        
         values = set([row[best_attr] for row in data])
         for value in values:
             subset = [row for row in data if row[best_attr] == value]
@@ -115,11 +115,9 @@ def id3(data, attributes, depth, max_depth, criterion='information_gain', numeri
     return tree
 
 def classify(tree, instance):
-    """
-    Classify a single instance using the decision tree.
-    """
+    
     if not isinstance(tree, dict):
-        return tree  # Leaf node
+        return tree  
     
     attr = next(iter(tree))  
     value = instance[attr] 
@@ -137,13 +135,13 @@ def classify(tree, instance):
         if value in tree[attr]:
             return classify(tree[attr][value], instance)
         else:
-            # If the value was not seen during training, return the majority label
+            
             labels = []
             for subtree in tree[attr].values():
                 if isinstance(subtree, dict):
-                    # If subtree is another node, collect its majority label
-                    # This requires a helper function or additional data structure
-                    # For simplicity, return 1 or -1
+                    
+                    
+                    
                     labels.append(1)
                 else:
                     labels.append(subtree)
@@ -168,18 +166,18 @@ class DecisionTree:
         if feature_value in node['children']:
             return self.predict_sample(node['children'][feature_value], sample)
         else:
-            # Handle unseen feature values by using majority label
+            
             return node['majority_label']
 
     def build_tree(self, X, y, feature_indices):
-        # Base cases
+        
         if len(set(y)) == 1:
             return {'is_leaf': True, 'label': y[0]}
         if not feature_indices:
             majority_label = Counter(y).most_common(1)[0][0]
             return {'is_leaf': True, 'label': majority_label}
 
-        # Select the best feature to split
+        
         best_feature = self.select_best_feature(X, y, feature_indices)
         tree = {
             'is_leaf': False,
@@ -188,25 +186,25 @@ class DecisionTree:
             'majority_label': Counter(y).most_common(1)[0][0]
         }
 
-        # Get unique values of the best feature
+        
         feature_values = set([sample[best_feature] for sample in X])
 
-        # Remove the best feature from the list
+        
         new_feature_indices = feature_indices.copy()
         new_feature_indices.remove(best_feature)
 
         for value in feature_values:
-            # Split the dataset
+            
             indices = [i for i, sample in enumerate(X) if sample[best_feature] == value]
             X_subset = [X[i] for i in indices]
             y_subset = [y[i] for i in indices]
 
             if not X_subset:
-                # Create a leaf node with the majority label
+                
                 majority_label = Counter(y).most_common(1)[0][0]
                 tree['children'][value] = {'is_leaf': True, 'label': majority_label}
             else:
-                # Recursively build the tree
+                
                 subtree = self.build_tree(X_subset, y_subset, new_feature_indices)
                 tree['children'][value] = subtree
 
@@ -218,12 +216,12 @@ class DecisionTree:
         current_entropy = self.calculate_entropy(y)
 
         for feature in feature_indices:
-            # Get all possible values of the feature
+            
             feature_values = set([sample[feature] for sample in X])
             feature_entropy = 0
 
             for value in feature_values:
-                # Subset the data for each value
+                
                 indices = [i for i, sample in enumerate(X) if sample[feature] == value]
                 y_subset = [y[i] for i in indices]
                 weight = len(y_subset) / len(y)

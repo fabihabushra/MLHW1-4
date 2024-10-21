@@ -49,7 +49,7 @@ The datasets used in this project are:
 │   ├── stochastic_gradient_descent.py
 │   └── analytical_solution.py
 ├── results/
-│   └── (output files and plots)
+│   └── (output plots)
 ├── dataloader.py       
 ├── main.py
 

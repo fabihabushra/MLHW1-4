@@ -57,7 +57,16 @@ The datasets used in this project are:
 
 ## Running the Code
 
-Run the `main.py` for different algorithms on different datasets by specifying command-line arguments.
+There are two ways to run the code: using the `main.py` directly or executing the provided `run.sh` script.
+
+### Option 1: Running `main.py` Directly
+
+You can execute `main.py` to run different algorithms on various datasets by specifying command-line arguments.
+
+**Usage:**
+
+```bash
+python main.py --algorithm <algorithm_name> --dataset <dataset_name> [additional_parameters]
 
 ### Usage
 

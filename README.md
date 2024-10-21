@@ -96,7 +96,7 @@ python main.py --algorithm <algorithm> --dataset <dataset> [additional arguments
 ### Ensemble Learning Specific Arguments
 
 - `--iterations`: Number of iterations (for AdaBoost, Bagging, Random Forest)
-- `--max_features`: For Random Forest, the number of features to consider at each split. Can be a comma-separated list (e.g., `--max_features 4,6,8`)
+- `--max_features`: For Random Forest, the number of features to consider at each split. Can be a comma-separated list (e.g., `--max_features 2,4,6`)
 
 ### Linear Regression Specific Arguments
 

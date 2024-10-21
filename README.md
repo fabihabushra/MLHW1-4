@@ -48,10 +48,11 @@ The datasets used in this project are:
 │   ├── batch_gradient_descent.py
 │   ├── stochastic_gradient_descent.py
 │   └── analytical_solution.py
-├── dataloader.py       
-├── main.py             
 ├── results/
 │   └── (output files and plots)
+├── dataloader.py       
+├── main.py
+
 ~~~
 
 ## Running the Code

@@ -79,9 +79,9 @@ Alternatively, you can use the `run.sh` script located in the root directory. Th
 
 **Usage:**
 
-    ```bash
+```bash
     ./run.sh
-    ```
+```
 
 The `run.sh` script will automatically execute predefined commands for running various algorithms with the default settings.
 

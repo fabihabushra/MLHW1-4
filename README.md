@@ -140,7 +140,7 @@ python main.py --algorithm bagging --dataset bank --iterations 500
 #### Random Forest on Bank Dataset
 
 ~~~
-python main.py --algorithm randomforest --dataset bank --iterations 500 --max_features 4,6,8
+python main.py --algorithm randomforest --dataset bank --iterations 500 --max_features 2,4,6
 ~~~
 
 #### Bias-Variance Decomposition for Bagging on Bank Dataset

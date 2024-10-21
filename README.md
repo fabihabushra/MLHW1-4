@@ -176,18 +176,3 @@ python main.py --algorithm analytical_solution --dataset concrete
 ## Output
 
 - **Results Directory**: Results plots such as training and test errors are saved in the `results` directory.
-  
-## Datasets
-
-- **Car Evaluation Dataset** (`car`):
-  - Used for classification with categorical features.
-  - Contains car evaluations based on various criteria.
-
-- **Bank Marketing Dataset** (`bank`):
-  - Used for classification, includes both numerical and categorical features.
-  - Contains information about bank marketing campaigns.
-  - May contain 'unknown' values in some attributes.
-
-- **Concrete Compressive Strength Dataset** (`concrete`):
-  - Used for regression tasks.
-  - Contains instances of concrete samples with various features influencing compressive strength.

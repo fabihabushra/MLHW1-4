@@ -75,15 +75,7 @@ python main.py --algorithm <algorithm_name> --dataset <dataset_name> [additional
 
 ### Option 2: Running the Code Using `run.sh`
 
-Alternatively, you can use the `run.sh` script located in the root directory. This script provides commands to run several algorithms on different datasets with default parameters.
-
-**Usage:**
-
-```bash
-./run.sh
-```
-
-The `run.sh` script will automatically execute predefined commands for running various algorithms with the default settings.
+Alternatively, you can use the `run.sh` script located in the root directory. The `run.sh` script will automatically execute predefined commands for running various algorithms with the default settings.
 
 ### Available Algorithms
 

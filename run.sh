@@ -19,7 +19,7 @@ python main.py --algorithm randomforest --dataset bank --iterations 500 --max_fe
 python main.py --algorithm batch_gradient_descent --dataset concrete --initial_learning_rate 0.001 --decay_factor 0.8 --decay_interval 500
 
 # Run Stochastic Gradient Descent on Concrete Dataset
-python main.py --algorithm stochastic_gradient_descent --dataset concrete --initial_learning_rate 0.01 --decay_factor 0.8 --decay_interval 500
+python main.py --algorithm stochastic_gradient_descent --dataset concrete --initial_learning_rate 0.01 --decay_factor 0.7 --decay_interval 300
 
 # Run Analytical Solution on Concrete Dataset
 python main.py --algorithm analytical_solution --dataset concrete

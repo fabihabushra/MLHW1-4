@@ -29,3 +29,13 @@ python main.py --algorithm bagging_bias_variance --dataset bank --num_runs 100 -
 
 # Run Bias-Variance Decomposition for Random Forest on Bank Dataset
 python main.py --algorithm random_forest_bias_variance --dataset bank --num_runs 100 --sample_size 1000 --num_trees 500 --bias_variance_max_features 4
+
+# Run Standard Perceptron on Banknote Dataset
+python main.py --algorithm standard_perceptron --dataset bank-note --epochs 10
+
+# Run Voted Perceptron on Banknote Dataset
+python main.py --algorithm voted_perceptron --dataset bank-note --epochs 10
+
+# Run Averaged Perceptron on Banknote Dataset
+python main.py --algorithm average_perceptron --dataset bank-note --epochs 10
+

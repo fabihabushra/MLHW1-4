@@ -15,6 +15,10 @@ This project implements various machine learning algorithms, including:
   - Batch Gradient Descent
   - Stochastic Gradient Descent
   - Analytical Solution
+- **Perceptron Algorithms**:
+  - Standard Perceptron
+  - Voted Perceptron
+  - Averaged Perceptron
 - **Bias-Variance Decomposition** experiments for Bagging and Random Forest
 
 The datasets used in this project are:
@@ -22,12 +26,16 @@ The datasets used in this project are:
 - **Car Evaluation Dataset** (`car`)
 - **Bank Marketing Dataset** (`bank`)
 - **Concrete Compressive Strength Dataset** (`concrete`)
-
+- **Banknote Authentication Dataset** (`bank-note`)
+  
 ## Folder Structure
 
 ~~~
 .
 ├── bank/               
+│   ├── train.csv       
+│   ├── test.csv
+├── bank-note/                
 │   ├── train.csv       
 │   ├── test.csv        
 ├── car/               
@@ -48,6 +56,10 @@ The datasets used in this project are:
 │   ├── batch_gradient_descent.py
 │   ├── stochastic_gradient_descent.py
 │   └── analytical_solution.py
+├── Perceptron/
+│   ├── standard_perceptron.py
+│   ├── voted_perceptron.py
+│   └── average_perceptron.py
 ├── results/
 │   └── (output plots)
 ├── dataloader.py       
@@ -88,12 +100,16 @@ Alternatively, you can use the `run.sh` script located in the root directory. Th
 - `analytical_solution`
 - `bagging_bias_variance`
 - `random_forest_bias_variance`
+- `standard_perceptron`
+- `voted_perceptron`
+- `average_perceptron`
 
 ### Available Datasets
 
 - `car`
 - `bank`
 - `concrete`
+- `bank-note`
 
 ### Common Arguments
 
@@ -122,6 +138,9 @@ Alternatively, you can use the `run.sh` script located in the root directory. Th
 - `--sample_size`: Sample size for each run (default: 1000)
 - `--num_trees`: Number of trees in the ensemble (default: 500)
 - `--bias_variance_max_features`: Number of features to consider at each split for Random Forest Bias-Variance (default: `4`)
+
+### Perceptron Specific Arguments
+- `--epochs`: Number of epochs for training (default: 10)
 
 ### Examples
 
@@ -183,6 +202,24 @@ python main.py --algorithm stochastic_gradient_descent --dataset concrete --init
 
 ~~~
 python main.py --algorithm analytical_solution --dataset concrete
+~~~
+
+#### Standard Perceptron on Banknote Dataset
+
+~~~
+python main.py --algorithm standard_perceptron --dataset bank-note --epochs 10
+~~~
+
+#### Voted Perceptron on Banknote Dataset
+
+~~~
+python main.py --algorithm voted_perceptron --dataset bank-note --epochs 10
+~~~
+
+#### Averaged Perceptron on Banknote Dataset
+
+~~~
+python main.py --algorithm average_perceptron --dataset bank-note --epochs 10
 ~~~
 
 ## Output

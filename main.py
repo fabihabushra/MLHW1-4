@@ -13,6 +13,10 @@ from EnsembleLearning.random_forest_bias_variance import run_random_forest_bias_
 from LinearRegression.batch_gradient_descent import batch_gradient_descent
 from LinearRegression.stochastic_gradient_descent import stochastic_gradient_descent
 from LinearRegression.analytical_solution import analytical_solution
+from Perceptron.standard_perceptron import standard_perceptron
+from Perceptron.voted_perceptron import voted_perceptron
+from Perceptron.average_perceptron import average_perceptron
+
 
 def calculate_error(tree, data, dataset_type="train"):
     correct = 0
@@ -285,11 +289,109 @@ def run_analytical_solution_concrete(train_file, test_file, results_directory):
     print("\nOptimal weight vector (Analytical Solution):")
     print(w)
 
+def run_standard_perceptron(train_file, test_file, T):
+    train_data = np.loadtxt(train_file, delimiter=',')
+    X_train = train_data[:, :-1]
+    y_train = train_data[:, -1]
+
+    test_data = np.loadtxt(test_file, delimiter=',')
+    X_test = test_data[:, :-1]
+    y_test = test_data[:, -1]
+
+    y_train = np.where(y_train == 0, -1, 1)
+    y_test = np.where(y_test == 0, -1, 1)
+
+    X_train_aug = np.hstack((X_train, np.ones((X_train.shape[0], 1))))
+    X_test_aug = np.hstack((X_test, np.ones((X_test.shape[0], 1))))
+
+    w = standard_perceptron(X_train_aug, y_train, T)
+
+    print("Learned weight vector:", w)
+
+    errors = 0
+    for xi, yi in zip(X_test_aug, y_test):
+        prediction = np.sign(np.dot(w, xi))
+        if prediction != yi:
+            errors += 1
+
+    average_error = errors / len(y_test)
+    print("Prediction error on the test dataset:", average_error)
+
+def run_voted_perceptron(train_file, test_file, T):
+    train_data = np.loadtxt(train_file, delimiter=',')
+    X_train = train_data[:, :-1]
+    y_train = train_data[:, -1]
+
+    test_data = np.loadtxt(test_file, delimiter=',')
+    X_test = test_data[:, :-1]
+    y_test = test_data[:, -1]
+
+    y_train = np.where(y_train == 0, -1, 1)
+    y_test = np.where(y_test == 0, -1, 1)
+
+    X_train_aug = np.hstack((X_train, np.ones((X_train.shape[0], 1))))
+    X_test_aug = np.hstack((X_test, np.ones((X_test.shape[0], 1))))
+
+    w_list, c_list = voted_perceptron(X_train_aug, y_train, T)
+
+    print("List of distinct weight vectors and their counts:")
+    for idx, (weight, count) in enumerate(zip(w_list, c_list)):
+        print(f"Weight vector {idx + 1}: {weight}, Count: {count}")
+
+    errors = 0
+    for xi, yi in zip(X_test_aug, y_test):
+        vote = 0
+        for w_k, c_k in zip(w_list, c_list):
+            vote += c_k * np.sign(np.dot(w_k, xi))
+        prediction = np.sign(vote)
+        if prediction != yi:
+            errors += 1
+
+    average_error = errors / len(y_test)
+    print(f"\nPrediction error on the test dataset: {average_error}")
+
+def run_average_perceptron(train_file, test_file, T):
+    train_data = np.loadtxt(train_file, delimiter=',')
+    X_train = train_data[:, :-1]
+    y_train = train_data[:, -1]
+
+    test_data = np.loadtxt(test_file, delimiter=',')
+    X_test = test_data[:, :-1]
+    y_test = test_data[:, -1]
+
+    y_train = np.where(y_train == 0, -1, 1)
+    y_test = np.where(y_test == 0, -1, 1)
+
+    X_train_aug = np.hstack((X_train, np.ones((X_train.shape[0], 1))))
+    X_test_aug = np.hstack((X_test, np.ones((X_test.shape[0], 1))))
+
+    a, T = average_perceptron(X_train_aug, y_train, T)
+
+    n = X_train_aug.shape[0]
+    total_iterations = n * T
+    a_avg = a / total_iterations
+
+    print("\nLearned weight vector a:")
+    print(a)
+
+    print("\nLearned weight vector a/total_iterations:")
+    print(a_avg)
+
+    errors = 0
+    for xi, yi in zip(X_test_aug, y_test):
+        prediction = np.sign(np.dot(a, xi))
+        if prediction != yi:
+            errors += 1
+
+    average_error = errors / len(y_test)
+    print(f"\nAverage prediction error on the test dataset: {average_error}")
+
+
 def main():
     parser = argparse.ArgumentParser(description='Run machine learning algorithms on datasets.')
-    parser.add_argument('--algorithm', type=str, required=True, choices=['decisiontree', 'adaboost', 'bagging', 'randomforest', 'bagging_bias_variance', 'random_forest_bias_variance', 'batch_gradient_descent', 'stochastic_gradient_descent', 'analytical_solution'],
+    parser.add_argument('--algorithm', type=str, required=True, choices=['decisiontree', 'adaboost', 'bagging', 'randomforest', 'bagging_bias_variance', 'random_forest_bias_variance', 'batch_gradient_descent', 'stochastic_gradient_descent', 'analytical_solution', 'standard_perceptron', 'voted_perceptron', 'average_perceptron'],
                         help='Algorithm to run')
-    parser.add_argument('--dataset', type=str, required=True, choices=['car', 'bank', 'concrete'],
+    parser.add_argument('--dataset', type=str, required=True, choices=['car', 'bank', 'concrete', 'bank-note'],
                         help='Dataset to use')
 
     
@@ -314,11 +416,10 @@ def main():
     parser.add_argument('--num_trees', type=int, default=500, help='Number of trees in the ensemble')
     parser.add_argument('--bias_variance_max_features', type=int, default=4,
                     help='Number of features to consider at each split (for Random Forest)')
-
+    parser.add_argument('--epochs', type=int, default=10, help='Number of epochs for perceptron algorithms')
 
 
     args = parser.parse_args()
-
     algorithm = args.algorithm
     dataset = args.dataset
 
@@ -401,6 +502,27 @@ def main():
             run_analytical_solution_concrete(train_file, test_file, results_directory)
         else:
             print(f"Analytical Solution not implemented for dataset '{dataset}'")
+            sys.exit(1)
+    elif algorithm == 'standard_perceptron':
+        T = args.epochs
+        if dataset == 'bank-note':
+            run_standard_perceptron(train_file, test_file, T)
+        else:
+            print(f"Standard Perceptron not implemented for dataset '{dataset}'")
+            sys.exit(1)
+    elif algorithm == 'voted_perceptron':
+        T = args.epochs
+        if dataset == 'bank-note':
+            run_voted_perceptron(train_file, test_file, T)
+        else:
+            print(f"Voted Perceptron not implemented for dataset '{dataset}'")
+            sys.exit(1)
+    elif algorithm == 'average_perceptron':
+        T = args.epochs
+        if dataset == 'bank-note':
+            run_average_perceptron(train_file, test_file, T)
+        else:
+            print(f"Average Perceptron not implemented for dataset '{dataset}'")
             sys.exit(1)
     else:
         print(f"Algorithm '{algorithm}' is not recognized.")

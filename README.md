@@ -245,7 +245,7 @@ python main.py --algorithm average_perceptron --dataset bank-note --epochs 10
 #### Kernel Perceptron on Banknote Dataset
 
 ```bash
-python main.py --algorithm kernel_perceptron --dataset bank-note --epochs 20
+python main.py --algorithm kernel_perceptron --dataset bank-note
 ```
 
 #### SVM in Primal Domain on Banknote Dataset

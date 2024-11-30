@@ -1,9 +1,8 @@
-
 import numpy as np
 import argparse
 import os
 import sys
-from dataloader import load_data, load_data_concrete, add_bias_term, handle_unknown_values, process_numerical_attributes, one_hot_encode
+from dataloader import load_data, load_data_concrete, add_bias_term, handle_unknown_values, process_numerical_attributes, one_hot_encode, load_data_with_bias, load_data_bank_note 
 from DecisionTree.decisiontree import id3, classify
 from EnsembleLearning.adaboost import adaboost, prepare_data as prepare_adaboost_data
 from EnsembleLearning.bagging import bagging, prepare_data as prepare_bagging_data, plot_bagging_errors
@@ -16,6 +15,10 @@ from LinearRegression.analytical_solution import analytical_solution
 from Perceptron.standard_perceptron import standard_perceptron
 from Perceptron.voted_perceptron import voted_perceptron
 from Perceptron.average_perceptron import average_perceptron
+from Perceptron.kernel_perceptron import train_kernel_perceptron
+from SVM.svm_primal import train_svm_primal
+from SVM.svm_dual import train_svm_dual, predict
+from SVM.nonlinear_svm import train_nonlinear_svm
 
 
 def calculate_error(tree, data, dataset_type="train"):
@@ -386,10 +389,68 @@ def run_average_perceptron(train_file, test_file, T):
     average_error = errors / len(y_test)
     print(f"\nAverage prediction error on the test dataset: {average_error}")
 
+def run_kernel_perceptron(train_file, test_file, results_dir):
+    X_train, y_train = load_data_bank_note(train_file)
+    X_test, y_test = load_data_bank_note(test_file)
+
+    gamma_values = [0.1, 0.5, 1, 5, 100]
+    results = train_kernel_perceptron(X_train, y_train, X_test, y_test, gamma_values)
+
+    print("\nKernel Perceptron Results:")
+    print("Gamma, Training Error, Test Error")
+    for gamma, train_error, test_error in results:
+        print(f"{gamma}, {train_error:.4f}, {test_error:.4f}")
+
+    results_file = os.path.join(results_dir, "kernel_perceptron_results.txt")
+    with open(results_file, "w") as f:
+        f.write("Gamma, Training Error, Test Error\n")
+        for gamma, train_error, test_error in results:
+            f.write(f"{gamma}, {train_error:.4f}, {test_error:.4f}\n")
+    print(f"Results saved to {results_file}")
+
+def run_svm_primal(train_file, test_file, epochs, schedule_type, results_dir):
+    X_train, y_train = load_data_with_bias(train_file)
+    X_test, y_test = load_data_with_bias(test_file)
+    C_values = [100 / len(y_train), 500 / len(y_train), 700 / len(y_train)]
+    train_svm_primal(X_train, y_train, X_test, y_test, C_values, epochs, schedule_type, results_dir)
+
+def run_svm_dual(train_file, test_file, results_dir):
+
+    X_train, y_train = load_data_bank_note(train_file)
+    X_test, y_test = load_data_bank_note(test_file)
+    C_values = [100 / len(y_train), 500 / len(y_train), 700 / len(y_train)]
+
+    for C in C_values:
+        print(f"Training with C = {C}")
+        
+        w, b, alpha, support_vectors = train_svm_dual(X_train, y_train, C)
+        
+        train_predictions = predict(X_train, w, b)
+        test_predictions = predict(X_test, w, b)
+        train_error = np.mean(train_predictions != y_train)
+        test_error = np.mean(test_predictions != y_test)
+
+        print(f"Learned weights (w): {w}")
+        print(f"Learned bias (b): {b}")
+        print(f"Number of support vectors: {np.sum(support_vectors)}")
+        print(f"Training Error: {train_error}")
+        print(f"Test Error: {test_error}")
+        print("-" * 50)
+
+def run_nonlinear_svm(train_file, test_file, results_dir):
+
+    X_train, y_train = load_data_bank_note(train_file)
+    X_test, y_test = load_data_bank_note(test_file)
+
+    C_values = [100 / len(y_train), 500 / len(y_train), 700 / len(y_train)]
+    gamma_values = [0.1, 0.5, 1, 5, 100]
+
+    train_nonlinear_svm(X_train, y_train, X_test, y_test, C_values, gamma_values, results_dir)
+
 
 def main():
     parser = argparse.ArgumentParser(description='Run machine learning algorithms on datasets.')
-    parser.add_argument('--algorithm', type=str, required=True, choices=['decisiontree', 'adaboost', 'bagging', 'randomforest', 'bagging_bias_variance', 'random_forest_bias_variance', 'batch_gradient_descent', 'stochastic_gradient_descent', 'analytical_solution', 'standard_perceptron', 'voted_perceptron', 'average_perceptron'],
+    parser.add_argument('--algorithm', type=str, required=True, choices=['decisiontree', 'adaboost', 'bagging', 'randomforest', 'bagging_bias_variance', 'random_forest_bias_variance', 'batch_gradient_descent', 'stochastic_gradient_descent', 'analytical_solution', 'standard_perceptron', 'voted_perceptron', 'average_perceptron', 'kernel_perceptron', 'svm_primal', 'svm_dual', 'nonlinear_svm'],
                         help='Algorithm to run')
     parser.add_argument('--dataset', type=str, required=True, choices=['car', 'bank', 'concrete', 'bank-note'],
                         help='Dataset to use')
@@ -416,14 +477,15 @@ def main():
     parser.add_argument('--num_trees', type=int, default=500, help='Number of trees in the ensemble')
     parser.add_argument('--bias_variance_max_features', type=int, default=4,
                     help='Number of features to consider at each split (for Random Forest)')
-    parser.add_argument('--epochs', type=int, default=10, help='Number of epochs for perceptron algorithms')
+    parser.add_argument('--epochs', type=int, default=10, help='Number of epochs')
+    parser.add_argument("--schedule_type", type=int, choices=[1, 2], default=1,
+                        help="Learning rate schedule type: 1 for decay with gamma_0/a, 2 for decay with 1+t")
 
 
     args = parser.parse_args()
     algorithm = args.algorithm
     dataset = args.dataset
 
-    
     base_dir = os.path.dirname(os.path.abspath(__file__))
     train_file = os.path.join(base_dir, dataset, 'train.csv')
     test_file = os.path.join(base_dir, dataset, 'test.csv')
@@ -523,6 +585,30 @@ def main():
             run_average_perceptron(train_file, test_file, T)
         else:
             print(f"Average Perceptron not implemented for dataset '{dataset}'")
+            sys.exit(1)
+    elif algorithm == "svm_primal":
+        if dataset == "bank-note":
+            run_svm_primal(train_file, test_file, args.epochs, args.schedule_type, results_directory)
+        else:
+            print(f"SVM primal algorithm not implemented for dataset '{dataset}'")
+            sys.exit(1)
+    elif algorithm == "svm_dual":
+        if dataset == "bank-note":
+            run_svm_dual(train_file, test_file, results_directory)
+        else:
+            print(f"SVM dual algorithm not implemented for dataset '{dataset}'")
+            sys.exit(1)
+    elif args.algorithm == "nonlinear_svm":
+        if args.dataset == "bank-note":
+            run_nonlinear_svm(train_file, test_file, results_directory)
+        else:
+            print(f"Nonlinear SVM not implemented for dataset '{dataset}'")
+            sys.exit(1)
+    elif args.algorithm == "kernel_perceptron":
+        if args.dataset == "bank-note":
+            run_kernel_perceptron(train_file, test_file, results_directory)
+        else:
+            print(f"Kernel Perceptron not implemented for dataset '{dataset}'")
             sys.exit(1)
     else:
         print(f"Algorithm '{algorithm}' is not recognized.")

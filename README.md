@@ -19,6 +19,11 @@ This project implements various machine learning algorithms, including:
   - Standard Perceptron
   - Voted Perceptron
   - Averaged Perceptron
+  - Kernel Perceptron
+- **Support Vector Machines (SVMs)**:
+  - SVM in the Primal Domain
+  - SVM in the Dual Domain
+  - Nonlinear SVM using Gaussian Kernel
 - **Bias-Variance Decomposition** experiments for Bagging and Random Forest
 
 The datasets used in this project are:
@@ -59,7 +64,12 @@ The datasets used in this project are:
 ├── Perceptron/
 │   ├── standard_perceptron.py
 │   ├── voted_perceptron.py
-│   └── average_perceptron.py
+│   ├── average_perceptron.py
+│   └── kernel_perceptron.py
+├── SVM/
+│   ├── svm_primal.py
+│   ├── svm_dual.py
+│   └── nonlinear_svm.py
 ├── results/
 │   └── (output plots)
 ├── dataloader.py       
@@ -103,6 +113,10 @@ Alternatively, you can use the `run.sh` script located in the root directory. Th
 - `standard_perceptron`
 - `voted_perceptron`
 - `average_perceptron`
+- `kernel_perceptron`
+- `svm_primal`
+- `svm_dual`
+- `nonlinear_svm`
 
 ### Available Datasets
 
@@ -141,6 +155,12 @@ Alternatively, you can use the `run.sh` script located in the root directory. Th
 
 ### Perceptron Specific Arguments
 - `--epochs`: Number of epochs for training (default: 10)
+
+#### Support Vector Machines (SVM) Specific Arguments
+
+- `--epochs`: Number of epochs for the SVM in the primal domain (default: 100)
+- `--C`: Regularization parameter for SVM in primal and dual domain 
+- `--gamma`: Gaussian kernel parameter for nonlinear SVM 
 
 ### Examples
 
@@ -221,6 +241,30 @@ python main.py --algorithm voted_perceptron --dataset bank-note --epochs 10
 ~~~
 python main.py --algorithm average_perceptron --dataset bank-note --epochs 10
 ~~~
+
+#### Kernel Perceptron on Banknote Dataset
+
+```bash
+python main.py --algorithm kernel_perceptron --dataset bank-note --epochs 20
+```
+
+#### SVM in Primal Domain on Banknote Dataset
+
+```bash
+python main.py --algorithm svm_primal --dataset bank-note --epochs 100
+```
+
+#### SVM in Dual Domain on Banknote Dataset
+
+```bash
+python main.py --algorithm svm_dual --dataset bank-note
+```
+
+#### Nonlinear SVM with Gaussian Kernel on Banknote Dataset
+
+```bash
+python main.py --algorithm nonlinear_svm --dataset bank-note
+```
 
 ## Output
 

@@ -39,3 +39,14 @@ python main.py --algorithm voted_perceptron --dataset bank-note --epochs 10
 # Run Averaged Perceptron on Banknote Dataset
 python main.py --algorithm average_perceptron --dataset bank-note --epochs 10
 
+# Run Kernel Perceptron on Banknote Dataset
+python main.py --algorithm kernel_perceptron --dataset bank-note
+
+# Run SVM in Primal Domain on Banknote Dataset
+python main.py --algorithm svm_primal --dataset bank-note --epochs 100
+
+# Run SVM in Dual Domain on Banknote Dataset
+python main.py --algorithm svm_dual --dataset bank-note
+
+# Run Nonlinear SVM with Gaussian Kernel on Banknote Dataset
+python main.py --algorithm nonlinear_svm --dataset bank-note

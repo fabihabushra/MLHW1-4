@@ -1,5 +1,3 @@
-
-
 import csv
 import numpy as np
 from collections import Counter
@@ -155,3 +153,19 @@ def prepare_data_bias_variance(filename, numerical_indices, categorical_indices,
 
     return data, labels, medians
 
+def load_data_with_bias(filename):
+
+    data = np.loadtxt(filename, delimiter=",")
+    X = data[:, :-1]
+    y = data[:, -1]
+    y = np.where(y == 0, -1, 1)
+    X = np.hstack((X, np.ones((X.shape[0], 1))))  
+    return X, y
+
+def load_data_bank_note(filename):
+
+    data = np.loadtxt(filename, delimiter=",")
+    X = data[:, :-1]
+    y = data[:, -1]
+    y = np.where(y == 0, -1, 1)  
+    return X, y

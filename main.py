@@ -2,7 +2,7 @@ import numpy as np
 import argparse
 import os
 import sys
-from dataloader import load_data, load_data_concrete, add_bias_term, handle_unknown_values, process_numerical_attributes, one_hot_encode, load_data_with_bias, load_data_bank_note 
+from dataloader import load_data, load_data_concrete, add_bias_term, handle_unknown_values, process_numerical_attributes, one_hot_encode, load_data_with_bias, load_data_bank_note, load_data_nn 
 from DecisionTree.decisiontree import id3, classify
 from EnsembleLearning.adaboost import adaboost, prepare_data as prepare_adaboost_data
 from EnsembleLearning.bagging import bagging, prepare_data as prepare_bagging_data, plot_bagging_errors
@@ -447,29 +447,39 @@ def run_nonlinear_svm(train_file, test_file, results_dir):
 
     train_nonlinear_svm(X_train, y_train, X_test, y_test, C_values, gamma_values, results_dir)
 
+def run_neuralnet_experiment(train_file, test_file, results_dir):
+    X_train, y_train = load_data(train_file)
+    X_test, y_test = load_data(test_file)
+    
+    mean_X = X_train.mean(axis=0)
+    std_X = X_train.std(axis=0)
+    std_X[std_X == 0] = 1.0
+    X_train = (X_train - mean_X)/std_X
+    X_test = (X_test - mean_X)/std_X
+    
+    widths = [5, 10, 25, 50, 100]
+    gamma0 = 0.1
+    d_val = 100.0
+    epochs = 20
+    
+    results, epoch_losses_dict = run_neural_network(X_train, y_train, X_test, y_test, widths, gamma0, d_val, epochs)
+    
+    for w, (train_err, test_err) in results.items():
+        print(f"Width={w}: Final Train Error={train_err:.4f}, Test Error={test_err:.4f}")
+
 
 def main():
     parser = argparse.ArgumentParser(description='Run machine learning algorithms on datasets.')
-    parser.add_argument('--algorithm', type=str, required=True, choices=['decisiontree', 'adaboost', 'bagging', 'randomforest', 'bagging_bias_variance', 'random_forest_bias_variance', 'batch_gradient_descent', 'stochastic_gradient_descent', 'analytical_solution', 'standard_perceptron', 'voted_perceptron', 'average_perceptron', 'kernel_perceptron', 'svm_primal', 'svm_dual', 'nonlinear_svm'],
+    parser.add_argument('--algorithm', type=str, required=True, choices=['decisiontree', 'adaboost', 'bagging', 'randomforest', 'bagging_bias_variance', 'random_forest_bias_variance', 'batch_gradient_descent', 'stochastic_gradient_descent', 'analytical_solution', 'standard_perceptron', 'voted_perceptron', 'average_perceptron', 'kernel_perceptron', 'svm_primal', 'svm_dual', 'nonlinear_svm', 'neuralnet'],
                         help='Algorithm to run')
     parser.add_argument('--dataset', type=str, required=True, choices=['car', 'bank', 'concrete', 'bank-note'],
                         help='Dataset to use')
-
-    
     parser.add_argument('--max_depth', type=int, default=None, help='Maximum depth of the tree')
-
-    
-    parser.add_argument('--iterations', type=int, default=500, help='Number of iterations (for AdaBoost, Bagging, RandomForest)')
-
-    
+    parser.add_argument('--iterations', type=int, default=500, help='Number of iterations (for AdaBoost, Bagging, RandomForest)')    
     parser.add_argument('--max_features', type=str, default='4', help='Comma-separated list of max features to consider at each split (for Random Forest)')
-
-    
     parser.add_argument('--initial_learning_rate', type=float, default=0.01, help='Initial learning rate for gradient descent methods')
     parser.add_argument('--decay_factor', type=float, default=0.8, help='Decay factor for learning rate')
     parser.add_argument('--decay_interval', type=int, default=500, help='Number of iterations between learning rate decay')
-
-    
     parser.add_argument('--handle_unknown', type=str, choices=['y', 'n'], default='n',
                         help="Do you want to replace 'unknown' values with the majority of other attribute values in the training set? (y/n)")
     parser.add_argument('--num_runs', type=int, default=100, help='Number of runs for bias-variance decomposition')
@@ -598,18 +608,25 @@ def main():
         else:
             print(f"SVM dual algorithm not implemented for dataset '{dataset}'")
             sys.exit(1)
-    elif args.algorithm == "nonlinear_svm":
+    elif algorithm == "nonlinear_svm":
         if args.dataset == "bank-note":
             run_nonlinear_svm(train_file, test_file, results_directory)
         else:
             print(f"Nonlinear SVM not implemented for dataset '{dataset}'")
             sys.exit(1)
-    elif args.algorithm == "kernel_perceptron":
+    elif algorithm == "kernel_perceptron":
         if args.dataset == "bank-note":
             run_kernel_perceptron(train_file, test_file, results_directory)
         else:
             print(f"Kernel Perceptron not implemented for dataset '{dataset}'")
             sys.exit(1)
+    elif algorithm == "neuralnet":
+        if dataset == "bank-note":
+            run_neuralnet_experiment(train_file, test_file, results_directory)
+        else:
+            print(f"Neural network not implemented for dataset '{dataset}'")
+            sys.exit(1)
+
     else:
         print(f"Algorithm '{algorithm}' is not recognized.")
         sys.exit(1)

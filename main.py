@@ -448,8 +448,8 @@ def run_nonlinear_svm(train_file, test_file, results_dir):
     train_nonlinear_svm(X_train, y_train, X_test, y_test, C_values, gamma_values, results_dir)
 
 def run_neuralnet_experiment(train_file, test_file, results_dir):
-    X_train, y_train = load_data(train_file)
-    X_test, y_test = load_data(test_file)
+    X_train, y_train = load_data_nn(train_file)
+    X_test, y_test = load_data_nn(test_file)
     
     mean_X = X_train.mean(axis=0)
     std_X = X_train.std(axis=0)

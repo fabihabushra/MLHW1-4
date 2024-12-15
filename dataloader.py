@@ -169,3 +169,17 @@ def load_data_bank_note(filename):
     y = data[:, -1]
     y = np.where(y == 0, -1, 1)  
     return X, y
+
+def load_data_nn(filename):
+    data_list = []
+    with open(filename, 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            features = [float(x) for x in row[:-1]]
+            label = float(row[-1])
+            data_list.append(features + [label])
+    data = np.array(data_list)
+    X = data[:, :-1]
+    y = data[:, -1]
+    return X, y
+

@@ -50,3 +50,12 @@ python main.py --algorithm svm_dual --dataset bank-note
 
 # Run Nonlinear SVM with Gaussian Kernel on Banknote Dataset
 python main.py --algorithm nonlinear_svm --dataset bank-note
+
+# Run Feedforward Neural Network on Banknote Dataset
+python main.py --algorithm neuralnet --dataset bank-note --width 50 --epochs 20 --gamma0 0.1 --d 100.0
+
+# Run Logistic Regression MAP Estimation on Banknote Dataset
+python main.py --algorithm logistic_regression_map --dataset bank-note --gamma0 0.1 --d 100.0 --epochs 100
+
+# Run Logistic Regression ML Estimation on Banknote Dataset
+python main.py --algorithm logistic_regression_ml --dataset bank-note --gamma0 0.1 --d 10.0 --epochs 100

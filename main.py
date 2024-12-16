@@ -467,10 +467,23 @@ def run_neuralnet_experiment(train_file, test_file, results_dir):
     for w, (train_err, test_err) in results.items():
         print(f"Width={w}: Final Train Error={train_err:.4f}, Test Error={test_err:.4f}")
 
+def run_logistic_regression_map_experiment(train_file, test_file):
+    variances = [0.01, 0.1, 0.5, 1, 3, 5, 10, 100]
+    gamma0 = 0.1
+    d_val = 100.0
+    T = 100
+    
+    results = run_map_logistic_regression(train_file, test_file, variances, gamma0=gamma0, d=d_val, T=T)
+    
+    print("\nMAP Logistic Regression Results:")
+    for v, (train_err, test_err) in results.items():
+        print(f"v={v}: Train Error={train_err:.4f}, Test Error={test_err:.4f}")
+
+
 
 def main():
     parser = argparse.ArgumentParser(description='Run machine learning algorithms on datasets.')
-    parser.add_argument('--algorithm', type=str, required=True, choices=['decisiontree', 'adaboost', 'bagging', 'randomforest', 'bagging_bias_variance', 'random_forest_bias_variance', 'batch_gradient_descent', 'stochastic_gradient_descent', 'analytical_solution', 'standard_perceptron', 'voted_perceptron', 'average_perceptron', 'kernel_perceptron', 'svm_primal', 'svm_dual', 'nonlinear_svm', 'neuralnet'],
+    parser.add_argument('--algorithm', type=str, required=True, choices=['decisiontree', 'adaboost', 'bagging', 'randomforest', 'bagging_bias_variance', 'random_forest_bias_variance', 'batch_gradient_descent', 'stochastic_gradient_descent', 'analytical_solution', 'standard_perceptron', 'voted_perceptron', 'average_perceptron', 'kernel_perceptron', 'svm_primal', 'svm_dual', 'nonlinear_svm', 'neuralnet', 'logistic_regression_map'],
                         help='Algorithm to run')
     parser.add_argument('--dataset', type=str, required=True, choices=['car', 'bank', 'concrete', 'bank-note'],
                         help='Dataset to use')
@@ -619,6 +632,12 @@ def main():
             run_kernel_perceptron(train_file, test_file, results_directory)
         else:
             print(f"Kernel Perceptron not implemented for dataset '{dataset}'")
+            sys.exit(1)
+    elif algorithm == "neuralnet":
+        if dataset == "bank-note":
+            run_neuralnet_experiment(train_file, test_file, results_directory)
+        else:
+            print(f"Neural network not implemented for dataset '{dataset}'")
             sys.exit(1)
     elif algorithm == "neuralnet":
         if dataset == "bank-note":

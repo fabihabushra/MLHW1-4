@@ -11,6 +11,7 @@ This project implements various machine learning algorithms, including:
   - AdaBoost
   - Bagging
   - Random Forest
+- **Bias-Variance Decomposition** experiments for Bagging and Random Forest
 - **Linear Regression**:
   - Batch Gradient Descent
   - Stochastic Gradient Descent
@@ -24,7 +25,11 @@ This project implements various machine learning algorithms, including:
   - SVM in the Primal Domain
   - SVM in the Dual Domain
   - Nonlinear SVM using Gaussian Kernel
-- **Bias-Variance Decomposition** experiments for Bagging and Random Forest
+- **Logistic Regression**:
+  - Maximum A Posteriori (MAP) Estimation
+  - Maximum Likelihood (ML) Estimation
+- **Neural Networks**:
+  - Feedforward Neural Network with Backpropagation
 
 The datasets used in this project are:
 
@@ -61,6 +66,11 @@ The datasets used in this project are:
 │   ├── batch_gradient_descent.py
 │   ├── stochastic_gradient_descent.py
 │   └── analytical_solution.py
+├── LogisticRegression/
+│   ├── map_estimation.py
+│   ├── ml_estimation.py
+├── NeuralNetworks/
+│   └── backpropagation.py
 ├── Perceptron/
 │   ├── standard_perceptron.py
 │   ├── voted_perceptron.py
@@ -117,6 +127,9 @@ Alternatively, you can use the `run.sh` script located in the root directory. Th
 - `svm_primal`
 - `svm_dual`
 - `nonlinear_svm`
+- `neuralnet`
+- `logistic_regression_map`
+- `logistic_regression_ml`
 
 ### Available Datasets
 
@@ -140,18 +153,18 @@ Alternatively, you can use the `run.sh` script located in the root directory. Th
 - `--iterations`: Number of iterations (for AdaBoost, Bagging, Random Forest)
 - `--max_features`: For Random Forest, the number of features to consider at each split. Can be a comma-separated list (e.g., `--max_features 2,4,6`)
 
-### Linear Regression Specific Arguments
-
-- `--initial_learning_rate`: Initial learning rate for gradient descent methods (default: 0.01)
-- `--decay_factor`: Decay factor for learning rate (default: 0.8)
-- `--decay_interval`: Number of iterations between learning rate decay (default: 500)
-
 ### Bias-Variance Decomposition Specific Arguments
 
 - `--num_runs`: Number of runs for bias-variance decomposition (default: 100)
 - `--sample_size`: Sample size for each run (default: 1000)
 - `--num_trees`: Number of trees in the ensemble (default: 500)
 - `--bias_variance_max_features`: Number of features to consider at each split for Random Forest Bias-Variance (default: `4`)
+
+### Linear Regression Specific Arguments
+
+- `--initial_learning_rate`: Initial learning rate for gradient descent methods (default: 0.01)
+- `--decay_factor`: Decay factor for learning rate (default: 0.8)
+- `--decay_interval`: Number of iterations between learning rate decay (default: 500)
 
 ### Perceptron Specific Arguments
 - `--epochs`: Number of epochs for training (default: 10)
@@ -160,7 +173,14 @@ Alternatively, you can use the `run.sh` script located in the root directory. Th
 
 - `--epochs`: Number of epochs for the SVM in the primal domain (default: 100)
 - `--C`: Regularization parameter for SVM in primal and dual domain 
-- `--gamma`: Gaussian kernel parameter for nonlinear SVM 
+- `--gamma`: Gaussian kernel parameter for nonlinear SVM
+
+### Neural Network Specific Arguments
+
+- `--width`: Hidden layer width (default: varies)
+- `--epochs`: Number of epochs (default: `20`)
+- `--gamma0`: Initial learning rate for SGD (default: `0.1`)
+- `--d`: Learning rate decay factor (default: `100.0`)
 
 ### Examples
 
@@ -265,6 +285,25 @@ python main.py --algorithm svm_dual --dataset bank-note
 ```bash
 python main.py --algorithm nonlinear_svm --dataset bank-note
 ```
+
+#### Feedforward Neural Network on Banknote Dataset
+
+```bash
+python main.py --algorithm neuralnet --dataset bank-note --width 50 --epochs 20 --gamma0 0.1 --d 100.0
+```
+
+#### Logistic Regression MAP Estimation on Banknote Dataset
+
+```bash
+python main.py --algorithm logistic_regression_map --dataset bank-note --gamma0 0.1 --d 100.0 --epochs 100
+```
+
+#### Logistic Regression ML Estimation on Banknote Dataset
+
+```bash
+python main.py --algorithm logistic_regression_ml --dataset bank-note --gamma0 0.1 --d 10.0 --epochs 100
+```
+
 
 ## Output
 

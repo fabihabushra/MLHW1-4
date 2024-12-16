@@ -19,6 +19,9 @@ from Perceptron.kernel_perceptron import train_kernel_perceptron
 from SVM.svm_primal import train_svm_primal
 from SVM.svm_dual import train_svm_dual, predict
 from SVM.nonlinear_svm import train_nonlinear_svm
+from NeuralNetworks.backpropagation import run_neural_network
+from LogisticRegression.map_estimation import run_map_logistic_regression
+from LogisticRegression.ml_estimation import run_ml_logistic_regression
 
 
 def calculate_error(tree, data, dataset_type="train"):
@@ -479,11 +482,15 @@ def run_logistic_regression_map_experiment(train_file, test_file):
     for v, (train_err, test_err) in results.items():
         print(f"v={v}: Train Error={train_err:.4f}, Test Error={test_err:.4f}")
 
-
+def run_logistic_regression_ml_experiment(train_file, test_file):
+    results = run_ml_logistic_regression(train_file, test_file)
+    print("\nML Logistic Regression Results (no prior):")
+    for v, (train_err, test_err) in results.items():
+        print(f"v={v}: Train Error={train_err:.4f}, Test Error={test_err:.4f}")
 
 def main():
     parser = argparse.ArgumentParser(description='Run machine learning algorithms on datasets.')
-    parser.add_argument('--algorithm', type=str, required=True, choices=['decisiontree', 'adaboost', 'bagging', 'randomforest', 'bagging_bias_variance', 'random_forest_bias_variance', 'batch_gradient_descent', 'stochastic_gradient_descent', 'analytical_solution', 'standard_perceptron', 'voted_perceptron', 'average_perceptron', 'kernel_perceptron', 'svm_primal', 'svm_dual', 'nonlinear_svm', 'neuralnet', 'logistic_regression_map'],
+    parser.add_argument('--algorithm', type=str, required=True, choices=['decisiontree', 'adaboost', 'bagging', 'randomforest', 'bagging_bias_variance', 'random_forest_bias_variance', 'batch_gradient_descent', 'stochastic_gradient_descent', 'analytical_solution', 'standard_perceptron', 'voted_perceptron', 'average_perceptron', 'kernel_perceptron', 'svm_primal', 'svm_dual', 'nonlinear_svm', 'neuralnet', 'logistic_regression_map', 'logistic_regression_ml'],
                         help='Algorithm to run')
     parser.add_argument('--dataset', type=str, required=True, choices=['car', 'bank', 'concrete', 'bank-note'],
                         help='Dataset to use')
@@ -644,6 +651,12 @@ def main():
             run_neuralnet_experiment(train_file, test_file, results_directory)
         else:
             print(f"Neural network not implemented for dataset '{dataset}'")
+            sys.exit(1)
+    elif algorithm == "logistic_regression_ml":
+        if dataset == "bank-note":
+            run_logistic_regression_ml_experiment(train_file, test_file)
+        else:
+            print(f"Logistic Regression ML not implemented for dataset '{dataset}'")
             sys.exit(1)
 
     else:

@@ -1,5 +1,5 @@
 import numpy as np
-from ..dataloader import load_data_nn_nn
+from ..dataloader import load_data_nn
 
 def sigmoid(u):
     return 1.0 / (1.0 + np.exp(-u))
